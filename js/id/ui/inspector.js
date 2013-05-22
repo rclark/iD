@@ -1,5 +1,6 @@
 iD.ui.Inspector = function(context) {
-    var entityEditor,
+    var presetList,
+        entityEditor,
         entityID,
         newFeature = false;
 
@@ -29,25 +30,21 @@ iD.ui.Inspector = function(context) {
             .append('div')
             .classed('pane tag-pane', true);
 
-        var presetList = iD.ui.PresetList(context, entity)
+        presetList = iD.ui.PresetList(context, entity)
             .autofocus(newFeature)
             .on('choose', function(preset) {
-                var right = panewrap.style('right').indexOf('%') > 0 ? '0%' : '0px';
                 panewrap
                     .transition()
-                    .style('right', right);
+                    .style('right', '0%');
 
                 tagLayer.call(entityEditor, preset);
             });
 
         entityEditor = iD.ui.EntityEditor(context, entity)
             .on('choose', function(preset) {
-                var right = panewrap.style('right').indexOf('%') > 0 ?
-                    '-100%' :
-                    '-' + selection.style('width');
                 panewrap
                     .transition()
-                    .style('right', right);
+                    .style('right', '-100%');
 
                 presetList
                     .current(preset)
