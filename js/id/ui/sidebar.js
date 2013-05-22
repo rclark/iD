@@ -1,28 +1,32 @@
 iD.ui.Sidebar = function(context) {
+    var inspector = iD.ui.Inspector(context);
+
     return function(selection) {
         var wrap = selection.append('div')
-            .style('display', 'none')
-            .attr('class', 'inspector-wrap fr');
+            .attr('class', 'inspector-hidden inspector-wrap fr')
+            .call(inspector);
 
         context.on('hover.sidebar', function(entity) {
             if (context.selection().length === 1) return;
 
             if (entity) {
-                wrap.classed('inspector-hover', true)
-                    .call(iD.ui.Inspector(context)
-                        .entityID(entity.id));
+                inspector.entityID(entity.id);
+
+                wrap.classed('inspector-hidden', false)
+                    .classed('inspector-hover', true);
             } else {
-                wrap.html('');
+                wrap.classed('inspector-hidden', true);
             }
         });
 
         context.on('select.sidebar', function(selection) {
             if (selection.length === 1) {
-                wrap.classed('inspector-hover', false)
-                    .call(iD.ui.Inspector(context)
-                        .entityID(selection[0]));
+                inspector.entityID(selection[0]);
+
+                wrap.classed('inspector-hidden', false)
+                    .classed('inspector-hover', false);
             } else {
-                wrap.html('');
+                wrap.classed('inspector-hidden', true);
             }
         })
     }

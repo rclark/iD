@@ -1,48 +1,39 @@
 iD.ui.Inspector = function(context) {
-    var presetList,
+    var paneWrap,
+        presetPane,
+        editorPane,
+        presetList,
         entityEditor,
         entityID,
         newFeature = false;
 
     function inspector(selection) {
+        paneWrap = selection.append('div')
+            .attr('class', 'panewrap');
 
-        var reselect = selection.html(),
-            entity = context.entity(entityID);
+        presetPane = paneWrap.append('div')
+            .attr('class', 'pane grid-pane');
 
-        selection
-            .html('')
-            .style('display', 'block')
-            .style('right', '-500px')
-            .style('opacity', 1)
-            .transition()
-            .duration(reselect ? 0 : 200)
-            .style('right', '0px');
+        editorPane = paneWrap.append('div')
+            .attr('class', 'pane tag-pane');
+    }
 
-        var panewrap = selection
-            .append('div')
-            .classed('panewrap', true);
-
-        var presetLayer = panewrap
-            .append('div')
-            .classed('pane grid-pane', true);
-
-        var tagLayer = panewrap
-            .append('div')
-            .classed('pane tag-pane', true);
+    function update() {
+        var entity = context.entity(entityID);
 
         presetList = iD.ui.PresetList(context, entity)
             .autofocus(newFeature)
             .on('choose', function(preset) {
-                panewrap
+                paneWrap
                     .transition()
                     .style('right', '0%');
 
-                tagLayer.call(entityEditor, preset);
+                editorPane.call(entityEditor, preset);
             });
 
         entityEditor = iD.ui.EntityEditor(context, entity)
             .on('choose', function(preset) {
-                panewrap
+                paneWrap
                     .transition()
                     .style('right', '-100%');
 
@@ -50,28 +41,24 @@ iD.ui.Inspector = function(context) {
                     .current(preset)
                     .autofocus(true);
 
-                presetLayer.call(presetList);
+                presetPane.call(presetList);
             });
 
         var tagless = _.without(Object.keys(entity.tags), 'area').length === 0;
 
         if (tagless) {
-            panewrap.style('right', '-100%');
-            presetLayer.call(presetList);
+            paneWrap.style('right', '-100%');
+            presetPane.call(presetList);
         } else {
-            panewrap.style('right', '-0%');
-            tagLayer.call(entityEditor);
+            paneWrap.style('right', '-0%');
+            editorPane.call(entityEditor);
         }
     }
-
-    inspector.close = function(selection) {
-        entityEditor.close();
-        selection.html('');
-    };
 
     inspector.entityID = function(_) {
         if (!arguments.length) return entityID;
         entityID = _;
+        update();
         return inspector;
     };
 
