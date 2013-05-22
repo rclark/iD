@@ -102,13 +102,6 @@ iD.modes.Select = function(context, selection) {
             }), true));
         }
 
-        if (singular()) {
-            inspector = iD.ui.Inspector(context, singular())
-                .newFeature(newFeature);
-
-            wrap.call(inspector);
-        }
-
         context.history()
             .on('undone.select', update)
             .on('redone.select', update);

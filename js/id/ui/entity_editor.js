@@ -90,7 +90,7 @@ iD.ui.EntityEditor = function(context, entity) {
 
         if (!entity.isNew()) {
             var osmLink = tageditorpreset.append('div')
-                .attr('class', 'col12 inspector-inner')
+                .attr('class', 'col12 inspector-inner inspector-external-links')
                 .append('a')
                 .attr('href', context.connection().entityURL(entity))
                 .attr('target', '_blank');

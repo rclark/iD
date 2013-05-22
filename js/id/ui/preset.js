@@ -89,7 +89,7 @@ iD.ui.preset = function(context, entity, preset) {
             .insert('div', '.more-buttons')
             .style('opacity', 0)
             .attr('class', function(field) {
-                return 'form-field form-field-' + field.id + ' fillL col12';
+                return 'form-field form-field-' + field.id + ' col12';
             });
 
         enter.transition()
