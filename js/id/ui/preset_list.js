@@ -1,14 +1,19 @@
-iD.ui.PresetList = function(context, entity) {
+iD.ui.PresetList = function(context) {
     var event = d3.dispatch('choose'),
-        presets, current,
+        id, selection, presets, current,
         autofocus = false;
 
     function browse() {
         context.enter(iD.modes.Browse(context));
     }
 
-    function presetList(selection) {
-        var geometry = entity.geometry(context.graph());
+    function presetList(s) {
+        selection = s;
+    }
+
+    function update() {
+        var entity = context.entity(id),
+            geometry = entity.geometry(context.graph());
         presets = context.presets().matchGeometry(geometry);
 
         selection.html('');
@@ -41,7 +46,7 @@ iD.ui.PresetList = function(context, entity) {
                  d3.event.keyCode === d3.keybinding.keyCodes['⌦'])) {
                 d3.event.preventDefault();
                 d3.event.stopPropagation();
-                iD.operations.Delete([entity.id], context)();
+                iD.operations.Delete([id], context)();
             } else if (search.property('value').length === 0 &&
                 (d3.event.ctrlKey || d3.event.metaKey) &&
                 d3.event.keyCode === d3.keybinding.keyCodes.z) {
@@ -132,7 +137,7 @@ iD.ui.PresetList = function(context, entity) {
             wrap.append('button')
                 .datum(preset)
                 .attr('class', 'preset-list-button')
-                .call(iD.ui.PresetIcon(context.geometry(entity.id)))
+                .call(iD.ui.PresetIcon(context.geometry(id)))
                 .on('click', item.choose)
                 .append('div')
                 .attr('class', 'label')
@@ -181,7 +186,7 @@ iD.ui.PresetList = function(context, entity) {
             wrap.append('button')
                 .datum(preset)
                 .attr('class', 'preset-list-button')
-                .call(iD.ui.PresetIcon(context.geometry(entity.id)))
+                .call(iD.ui.PresetIcon(context.geometry(id)))
                 .on('click', item.choose)
                 .append('div')
                 .attr('class', 'label')
@@ -210,6 +215,13 @@ iD.ui.PresetList = function(context, entity) {
     presetList.autofocus = function(_) {
         if (!arguments.length) return autofocus;
         autofocus = _;
+        return presetList;
+    };
+
+    presetList.entityID = function(_) {
+        if (!arguments.length) return id;
+        id = _;
+        update();
         return presetList;
     };
 

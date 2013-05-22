@@ -1,10 +1,9 @@
-iD.ui.EntityEditor = function(context, entity) {
+iD.ui.EntityEditor = function(context) {
     var event = d3.dispatch('choose'),
-        presets = context.presets(),
-        id = entity.id,
-        tags = _.clone(entity.tags),
+        id,
+        tags,
         preset,
-        selection_,
+        selection,
         presetUI,
         rawTagEditor;
 
@@ -17,31 +16,6 @@ iD.ui.EntityEditor = function(context, entity) {
         if (!entity) return;
 
         tags = _.clone(entity.tags);
-
-        // change preset if necessary (undos/redos)
-        var newmatch = presets.match(entity, context.graph());
-        if (newmatch !== preset) {
-            entityEditor(selection_, newmatch);
-            return;
-        }
-
-        presetUI.change(tags);
-        rawTagEditor.tags(tags);
-    }
-
-    function entityEditor(selection, newpreset) {
-        selection_ = selection;
-        var geometry = entity.geometry(context.graph());
-
-        if (!preset) preset = presets.match(entity, context.graph());
-
-        // preset was explicitly chosen
-        if (newpreset) {
-            tags = preset.removeTags(tags, geometry);
-
-            newpreset.applyTags(tags, geometry);
-            preset = newpreset;
-        }
 
         selection
             .datum(preset)
@@ -75,7 +49,7 @@ iD.ui.EntityEditor = function(context, entity) {
             .attr('class', 'col12 inspector-inner preset-icon-wrap')
             .append('div')
             .attr('class','fillL')
-            .call(iD.ui.PresetIcon(context.geometry(entity.id)));
+            .call(iD.ui.PresetIcon(context.geometry(id)));
 
         presetUI = iD.ui.preset(context, entity, preset)
             .on('change', changeTags)
@@ -111,7 +85,11 @@ iD.ui.EntityEditor = function(context, entity) {
         changeTags();
 
         context.history()
-            .on('change.entity-editor', update);
+            .on('change.entity-editor', historyChanged);
+    }
+
+    function entityEditor(s) {
+        selection = s;
     }
 
     function clean(o) {
@@ -132,6 +110,32 @@ iD.ui.EntityEditor = function(context, entity) {
                 t('operations.change_tags.annotation'));
         }
     }
+
+    function historyChanged() {
+        var entity = context.hasEntity(id);
+        if (!entity) return;
+        preset = context.presets().match(entity, context.graph());
+        update();
+    }
+
+    entityEditor.entityID = function(_) {
+        if (!arguments.length) return id;
+        id = _;
+        var entity = context.entity(id);
+        preset = context.presets().match(entity, context.graph());
+        update();
+        return entityEditor;
+    };
+
+    entityEditor.current = function(_) {
+        if (!arguments.length) return preset;
+        var geometry = context.geometry(id);
+        tags = preset.removeTags(tags, geometry);
+        tags = _.applyTags(tags, geometry);
+        preset = _;
+        update();
+        return entityEditor;
+    };
 
     entityEditor.close = function() {
         // Blur focused element so that tag changes are dispatched
