@@ -6,6 +6,6 @@ iD.ui.Sidebar = function(context) {
 
         selection.append('div')
             .style('display', 'none')
-            .attr('class', 'inspector-wrap fr content');
+            .attr('class', 'inspector-wrap fr');
     }
 };
