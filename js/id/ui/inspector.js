@@ -1,14 +1,12 @@
-iD.ui.Inspector = function(context, entity) {
+iD.ui.Inspector = function(context) {
     var entityEditor,
+        entityID,
         newFeature = false;
-
-    function browse() {
-        context.enter(iD.modes.Browse(context));
-    }
 
     function inspector(selection) {
 
-        var reselect = selection.html();
+        var reselect = selection.html(),
+            entity = context.entity(entityID);
 
         selection
             .html('')
@@ -33,7 +31,6 @@ iD.ui.Inspector = function(context, entity) {
 
         var presetList = iD.ui.PresetList(context, entity)
             .autofocus(newFeature)
-            .on('close', browse)
             .on('choose', function(preset) {
                 var right = panewrap.style('right').indexOf('%') > 0 ? '0%' : '0px';
                 panewrap
@@ -44,7 +41,6 @@ iD.ui.Inspector = function(context, entity) {
             });
 
         entityEditor = iD.ui.EntityEditor(context, entity)
-            .on('close', browse)
             .on('choose', function(preset) {
                 var right = panewrap.style('right').indexOf('%') > 0 ?
                     '-100%' :
@@ -74,6 +70,12 @@ iD.ui.Inspector = function(context, entity) {
     inspector.close = function(selection) {
         entityEditor.close();
         selection.html('');
+    };
+
+    inspector.entityID = function(_) {
+        if (!arguments.length) return entityID;
+        entityID = _;
+        return inspector;
     };
 
     inspector.newFeature = function(_) {

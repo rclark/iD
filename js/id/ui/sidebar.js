@@ -5,20 +5,22 @@ iD.ui.Sidebar = function(context) {
             .attr('class', 'inspector-wrap fr');
 
         context.on('hover.sidebar', function(entity) {
-            if (!context.selection().length) {
-                if (entity) {
-                    wrap.call(iD.ui.Inspector(context, entity))
-                        .classed('inspector-hover', true);
-                } else {
-                    wrap.html('');
-                }
+            if (context.selection().length === 1) return;
+
+            if (entity) {
+                wrap.classed('inspector-hover', true)
+                    .call(iD.ui.Inspector(context)
+                        .entityID(entity.id));
+            } else {
+                wrap.html('');
             }
         });
 
         context.on('select.sidebar', function(selection) {
             if (selection.length === 1) {
-                wrap.call(iD.ui.Inspector(context, context.entity(selection[0])))
-                    .classed('inspector-hover', false);
+                wrap.classed('inspector-hover', false)
+                    .call(iD.ui.Inspector(context)
+                        .entityID(selection[0]));
             } else {
                 wrap.html('');
             }
