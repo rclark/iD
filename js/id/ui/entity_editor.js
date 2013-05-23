@@ -57,26 +57,19 @@ iD.ui.EntityEditor = function(context) {
         rawTagEditor = iD.ui.RawTagEditor(context, entity)
             .on('change', changeTags);
 
-        var tageditorpreset = editorwrap.append('div')
+        var viewOnOSM = iD.ui.ViewOnOSM(context);
+
+        editorwrap.append('div')
             .attr('class', 'inspector-preset cf fillL col12')
             .call(presetUI);
 
         editorwrap.append('div')
+            .attr('class', 'col12 inspector-inner inspector-external-links')
+            .call(viewOnOSM, entity);
+
+        editorwrap.append('div')
             .attr('class', 'inspector-inner raw-tag-editor col12')
             .call(rawTagEditor, preset.id === 'other');
-
-        if (!entity.isNew()) {
-            var osmLink = tageditorpreset.append('div')
-                .attr('class', 'col12 inspector-inner inspector-external-links')
-                .append('a')
-                .attr('href', context.connection().entityURL(entity))
-                .attr('target', '_blank');
-
-            osmLink.append('span')
-                .attr('class','icon icon-pre-text out-link');
-
-            osmLink.append('span').text(t('inspector.view_on_osm'));
-        }
 
         presetUI.change(tags);
         rawTagEditor.tags(tags);
