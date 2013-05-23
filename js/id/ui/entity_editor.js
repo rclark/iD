@@ -52,8 +52,7 @@ iD.ui.EntityEditor = function(context) {
             .call(iD.ui.PresetIcon(context.geometry(id)));
 
         presetUI = iD.ui.preset(context, entity, preset)
-            .on('change', changeTags)
-            .on('close', browse);
+            .on('change', changeTags);
 
         rawTagEditor = iD.ui.RawTagEditor(context, entity)
             .on('change', changeTags);
