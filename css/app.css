@@ -678,13 +678,6 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
     display: none;
 }
 
-.inspector-hover .header button.preset-reset,
-.inspector-hover .header button.preset-close,
-.inspector-hover .more-buttons,
-.inspector-hover .inspector-external-links {
-    display: none;
-}
-
 .inspector-wrap .header button.preset-reset > div {
     height: 100%;
     padding: 20px 0;
@@ -716,6 +709,7 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
     background:#7092ff;
     border: 0;
 }
+
 
 /* Presets
 ------------------------------------------------------- */
@@ -917,6 +911,10 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
     padding-right: 20px;
 }
 
+.inspector-preset .form-field:last-child { 
+    padding-bottom: 20px;
+}
+
 .form-label {
     position: relative;
     font-weight: bold;
@@ -956,6 +954,72 @@ a:hover .icon.out-link   { background-position: -500px -14px;}
 
 .form-field textarea {
     height: 65px;
+}
+
+.tag-wrap .inspector-external-links { 
+    border-top: 1px solid #ccc;
+}
+
+/* Preset form (hover mode) */
+/* Remember to set up transitions between these states and the active versions */
+
+.inspector-hover textarea,
+.inspector-hover input[type=text],
+.inspector-hover input[type=search],
+.inspector-hover input[type=number],
+.inspector-hover input[type=url],
+.inspector-hover input[type=tel],
+.inspector-hover input[type=email] {
+    background-color: #f6f6f6;
+}
+
+.inspector-hover .checkselect input[type="checkbox"] { 
+    width: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin: 0;
+}
+
+.inspector-hover .hover-hide,
+.inspector-hover button.minor,
+.inspector-hover .combobox-carat,
+.inspector-hover button,
+.inspector-hover .spin-control,
+.inspector-hover .hide-toggle:before,
+.inspector-hover .more-buttons,
+.inspector-hover .tag-list,
+.inspector-hover .inspector-external-links { 
+    opacity: 0;
+}
+
+.inspector-hover .tag-list { 
+    height: 0;
+    overflow: hidden;
+}
+
+.inspector-hover h3 .hover-hide { 
+    width: 0;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.inspector-hover .hide-toggle { 
+    color: #a9a9a9;
+    padding-left: 0;
+}
+
+.inspector-hover .more-buttons,
+.inspector-hover .inspector-external-links {
+    height: 0;
+    padding: 0;
+}
+
+/* Hacky overrides to d3 animations,
+should probably be fixed in the d3 code */
+.inspector-hover .inspector-preset .form-field { 
+    padding-top: 10px !important;
+    max-height: none !important;
+    opacity: 1 !important;
 }
 
 /* adding additional preset fields */

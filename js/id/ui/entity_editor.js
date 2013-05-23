@@ -32,9 +32,15 @@ iD.ui.EntityEditor = function(context) {
             .append('span')
             .attr('class', 'icon back');
 
-        messagewrap.append('h3')
-            .attr('class', 'inspector-inner')
-            .text(t('inspector.editing_feature', { feature: preset.name() }));
+        var messageHeading = messagewrap.append('h3')
+            .attr('class', 'inspector-inner');
+
+        messageHeading.append('span')
+            .attr('class', 'hover-hide')
+            .text(t('inspector.editing_feature_active'));
+
+        messageHeading.append('span')
+            .text(t('inspector.editing_feature_hover', { feature: preset.name() }));
 
         messagewrap.append('button')
             .attr('class', 'preset-close fr')
